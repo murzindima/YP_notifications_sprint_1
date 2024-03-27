@@ -11,9 +11,9 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from pydantic import ValidationError
 
-from api.v1 import templates
-from core import config
-from core.logger import LOGGING
+from src.api.v1 import templates
+from src.core import config
+from src.core.logger import LOGGING
 
 
 def configure_tracer() -> None:

@@ -68,5 +68,7 @@ services:
     env_file: notifications_admin_panel/.env
     expose:
       - 8000
+    ports:
+      - "8000:8000"
     depends_on:
       - postgres-notifications
