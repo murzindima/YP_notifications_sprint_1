@@ -1,0 +1,58 @@
+name: Notifications_sprint_1_workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  linters:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint with Ruff
+        uses: chartboost/ruff-action@v1
+        with:
+          args: --line-length 79
+
+      - name: Run MyPy with HTML report
+        uses: jpetrucciani/mypy-check@master
+        with:
+          requirements: lxml==5.1.0
+          mypy_flags: '--config-file .mypy.ini --html-report coverage_report'
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mypy-coverage-report
+          path: coverage_report
+
+  send_message:
+    runs-on: ubuntu-latest
+    needs: linters
+    if: ${{ always() }}
+    steps:
+      - name: Set message
+        id: set_message
+        run: |
+          ref_name=$(basename ${{ github.event.pull_request.head.ref }})
+          if [[ "${{ needs.linters.result }}" == 'failure' ]]; then
+            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Pipeline for ${ref_name} finished with error." >> $GITHUB_ENV
+          else
+            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Pipeline for ${ref_name} finished successfully." >> $GITHUB_ENV
+          fi
+        shell: bash
+
+      - name: Debug message
+        run: |
+          echo "Debug: Message is: $MESSAGE"
+
+      - name: Send message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: ${{ env.MESSAGE }}
