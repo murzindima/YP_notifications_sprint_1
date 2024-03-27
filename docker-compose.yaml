@@ -59,3 +59,14 @@ services:
     depends_on:
       - postgres-authdb
       - redis
+
+  notifications-admin-panel:
+    build: notifications_admin_panel
+    image: notifications_admin_panel_spr10
+    container_name: notifications_admin_panel_spr10
+    restart: always
+    env_file: notifications_admin_panel/.env
+    expose:
+      - 8000
+    depends_on:
+      - postgres-notifications
