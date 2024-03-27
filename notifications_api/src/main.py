@@ -11,13 +11,13 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from pydantic import ValidationError
 
-from src.api.v1 import templates
+from src.api.v1 import notifications
 from src.core import config
 from src.core.logger import LOGGING
 
 
 def configure_tracer() -> None:
-    resource = Resource(attributes={SERVICE_NAME: "notifications-admin-panel"})
+    resource = Resource(attributes={SERVICE_NAME: "notifications-api"})
     trace.set_tracer_provider(TracerProvider(resource=resource))
     trace.get_tracer_provider().add_span_processor(
         BatchSpanProcessor(
@@ -34,7 +34,7 @@ configure_tracer()
 
 app = FastAPI(
     title=config.app_settings.project_name,
-    description="Notifications Admin Panel",
+    description="Notifications API",
     docs_url="/api/openapi",
     openapi_url="/api/openapi.json",
     default_response_class=ORJSONResponse,
@@ -55,7 +55,7 @@ async def before_request(request: Request, call_next):
     return response
 
 
-app.include_router(templates.router, prefix="/api/v1/templates", tags=["templates"])
+app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["templates"])
 # app.include_router(films.router, prefix="/api/v1/templates", tags=["templates"], dependencies=[Depends(security_jwt)])
 
 

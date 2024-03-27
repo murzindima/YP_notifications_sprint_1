@@ -17,7 +17,7 @@ class BaseConfig(BaseSettings):
 class AppSettings(BaseConfig):
     log_level: str = "INFO"
     batch_size: int = 100
-    project_name: str = "Notifications Admin Panel"
+    project_name: str = "movies"
 
     class Config:
         env_prefix = "app_"
