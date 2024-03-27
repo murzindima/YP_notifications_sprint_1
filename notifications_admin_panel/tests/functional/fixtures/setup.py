@@ -2,7 +2,11 @@ import pytest
 import pytest_asyncio
 from elasticsearch.helpers import async_bulk
 
-from functional.testdata.es_mapping import FILMS_INDEX_MAPPING, GENRES_INDEX_MAPPING, PERSONS_INDEX_MAPPING
+from functional.testdata.es_mapping import (
+    FILMS_INDEX_MAPPING,
+    GENRES_INDEX_MAPPING,
+    PERSONS_INDEX_MAPPING,
+)
 
 
 @pytest_asyncio.fixture()

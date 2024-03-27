@@ -1,41 +1,19 @@
 from abc import ABC, abstractmethod
-
-from pydantic import BaseModel
-
-from queries.base import BaseFilter
+from uuid import UUID
 
 
-class DataStorageService[M: BaseModel](ABC):
+class DataStorageService[M](ABC):
     """
     Abstract base class defining the interface for a data storage service.
 
     This class is designed to be subclassed for implementing specific data storage services
-    that interact with different types of models using Pydantic for data validation.
-
-    Attributes:
-        - M (BaseModel): The Pydantic model type that the data storage service works with.
+    that interact with different types of models.
     """
 
     @abstractmethod
-    async def get_by_id(self, model_id: str) -> M | None:
-        """
-        Abstract method to retrieve a model by its unique identifier.
-
-        Parameters:
-            - model_id (str): The unique identifier of the model.
-
-        Returns:
-            - M | None: The retrieved model if found, else None.
-        """
+    async def get_all(self) -> list[M]:
+        """Abstract method to retrieve a list of models."""
 
     @abstractmethod
-    async def get_all(self, model_filter: BaseFilter) -> list[M]:
-        """
-        Abstract method to retrieve a list of models based on a provided filter.
-
-        Parameters:
-            - model_filter (BaseFilter): An instance of BaseFilter or its subclass to apply filtering.
-
-        Returns:
-            - list[M]: A list of models matching the specified filter criteria.
-        """
+    async def get_by_id(self, model_id: UUID) -> M | None:
+        """Abstract method to retrieve a model by its unique identifier."""

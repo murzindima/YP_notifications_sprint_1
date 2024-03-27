@@ -19,7 +19,9 @@ async def all_templates(
     templates = await template_service.get_all_models(template_filter)
 
     if not templates:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATES_NOT_FOUND)
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATES_NOT_FOUND
+        )
 
     return [TemplateSchema(**template.model_dump()) for template in templates]
 

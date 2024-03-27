@@ -9,8 +9,10 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 def decode_token(token: str) -> Optional[dict]:
     try:
-        decoded_token = jwt.decode(token, algorithms=['HS256'], options={"verify_signature": False})
-        return decoded_token if decoded_token['exp'] >= time.time() else None
+        decoded_token = jwt.decode(
+            token, algorithms=["HS256"], options={"verify_signature": False}
+        )
+        return decoded_token if decoded_token["exp"] >= time.time() else None
     except Exception:
         return None
 
@@ -22,12 +24,21 @@ class JWTBearer(HTTPBearer):
     async def __call__(self, request: Request) -> dict:
         credentials: HTTPAuthorizationCredentials = await super().__call__(request)
         if not credentials:
-            raise HTTPException(status_code=http.HTTPStatus.FORBIDDEN, detail='Invalid authorization code.')
-        if not credentials.scheme == 'Bearer':
-            raise HTTPException(status_code=http.HTTPStatus.UNAUTHORIZED, detail='Only Bearer token might be accepted')
+            raise HTTPException(
+                status_code=http.HTTPStatus.FORBIDDEN,
+                detail="Invalid authorization code.",
+            )
+        if not credentials.scheme == "Bearer":
+            raise HTTPException(
+                status_code=http.HTTPStatus.UNAUTHORIZED,
+                detail="Only Bearer token might be accepted",
+            )
         decoded_token = self.parse_token(credentials.credentials)
         if not decoded_token:
-            raise HTTPException(status_code=http.HTTPStatus.FORBIDDEN, detail='Invalid or expired token.')
+            raise HTTPException(
+                status_code=http.HTTPStatus.FORBIDDEN,
+                detail="Invalid or expired token.",
+            )
         return decoded_token
 
     @staticmethod

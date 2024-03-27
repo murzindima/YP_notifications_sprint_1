@@ -1,86 +1,53 @@
 from typing import Type
+from uuid import UUID
 
-from elasticsearch import AsyncElasticsearch
-from fastapi import Request
 from pydantic import BaseModel
-from redis.asyncio import Redis
 
-from queries.base import BaseFilter
-from services.elasticsearch import ElasticsearchService
-from services.redis_cache import RedisCacheService
+from src.services.data_repository.postgres import PostgresService
 
 
-class BaseService[M: BaseModel](RedisCacheService, ElasticsearchService):
-    """
-    Base service class for interacting with Elasticsearch and Redis for data retrieval and caching.
-
-    Parameters:
-    - request (Request): The request object.
-    - elasticsearch (AsyncElasticsearch): An instance of client for interacting with Elasticsearch.
-    - redis (Redis): An instance of the Redis client for caching purposes.
-    - model_class (Type[M]): The Pydantic BaseModel subclass representing the data model for this service.
-    - index (str): The Elasticsearch index to operate on.
-    """
+class BaseService[M: BaseModel]:
+    """Base service class for working at the business logic and validation level using Pydantic."""
 
     def __init__(
         self,
-        request: Request,
-        elasticsearch: AsyncElasticsearch,
-        redis: Redis,
-        model_class: Type[M],
-        index: str,
+        model_schema_class: Type[M],
+        postgres_service: PostgresService,
     ):
-        self.request = request
-        ElasticsearchService.__init__(
-            self,
-            elasticsearch=elasticsearch,
-            index=index,
-            model_class=model_class,
-        )
-        RedisCacheService.__init__(
-            self,
-            redis=redis,
-            model_class=model_class,
-        )
+        self.model_schema_class = model_schema_class
+        self.postgres_service = postgres_service
 
-    async def get_model_by_id(self, model_id: str) -> M | None:
-        """
-        Retrieve a model by its unique identifier.
+    async def get_all_models(self) -> list[M]:
+        """Retrieve multiple models."""
+        db_models = await self.postgres_service.get_all()
 
-        Parameters:
-        - model_id (str): The unique identifier of the model.
+        return [self.model_schema_class.model_validate(model) for model in db_models]
 
-        Returns:
-        - An instance of the model if found, otherwise None.
-        """
-        cache_key = super().generate_cache_key(self.request)
-        model = await super().get_from_cache(cache_key)
+    async def get_model_by_id(self, model_id: UUID) -> M | None:
+        """Retrieve a model by identifier."""
+        db_model = await self.postgres_service.get_by_id(model_id)
+        if not db_model:
+            return None
 
-        if not model:
-            model = await super().get_by_id(model_id)
-            if not model:
-                return None
-            await super().put_to_cache(cache_key, model)
+        return self.model_schema_class.model_validate(db_model)
 
-        return model
+    async def create_model(self, model_schema: M) -> M:
+        """Create a model."""
+        db_model = await self.postgres_service.create(model_schema)
+        return self.model_schema_class.model_validate(db_model)
 
-    async def get_all_models(self, model_filter: BaseFilter) -> list[M]:
-        """
-        Retrieve multiple models based on the provided filter.
+    async def update_model(self, model_id: UUID, new_data: M) -> M | None:
+        """Update a model by identifier."""
+        db_model = await self.postgres_service.update(model_id, new_data)
+        if not db_model:
+            return None
 
-        Parameters:
-        - model_filter (BaseFilter): An instance of BaseFilter containing filtering parameters.
+        return self.model_schema_class.model_validate(db_model)
 
-        Returns:
-        - A list of model instances that match the filter criteria.
-        """
-        cache_key = super().generate_cache_key(self.request)
-        models = await super().get_from_cache(cache_key)
+    async def delete_model(self, model_id: UUID) -> M | None:
+        """Delete a model by identifier."""
+        db_model = await self.postgres_service.delete(model_id)
+        if not db_model:
+            return None
 
-        if not models:
-            models = await super().get_all(model_filter)
-            if not models:
-                return []
-            await super().put_to_cache(cache_key, models)
-
-        return models
+        return self.model_schema_class.model_validate(db_model)
