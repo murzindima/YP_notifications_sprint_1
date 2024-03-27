@@ -1,4 +1,4 @@
-name: CI
+name: Linters and Formatters
 
 on:
   push:
