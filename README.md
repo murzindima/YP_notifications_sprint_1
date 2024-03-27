@@ -1,6 +1,7 @@
 # Sprint 10
 
-[![CI](https://github.com/murzindima/notifications_sprint_1/actions/workflows/github-actions.yml/badge.svg)](https://github.com/murzindima/notifications_sprint_1/actions/workflows/github-actions.yml)
+[![Formatters and Linters](https://github.com/murzindima/notifications_sprint_1/actions/workflows/checks.yml/badge.svg)](https://github.com/murzindima/notifications_sprint_1/actions/workflows/checks.yml)
+[![Tests](https://github.com/murzindima/notifications_sprint_1/actions/workflows/tests.yml/badge.svg)](https://github.com/murzindima/notifications_sprint_1/actions/workflows/tests.yml)
 
 ## Repository Link
 
