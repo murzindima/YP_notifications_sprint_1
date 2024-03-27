@@ -35,10 +35,10 @@ async def create_notification(
     async with connection:
         channel = await connection.channel()
 
-        exchange = await channel.declare_exchange('emails', aio_pika.ExchangeType.DIRECT)
-        queue = await channel.declare_queue('welcome', durable=True)
+        exchange = await channel.declare_exchange('emails12', aio_pika.ExchangeType.DIRECT, durable=True)
+        queue = await channel.declare_queue('welcome23', durable=True)
 
-        await queue.bind(exchange, 'welcome')
+        await queue.bind(exchange, 'welcome23')
 
         message = aio_pika.Message(
             body=json.dumps({
@@ -49,6 +49,6 @@ async def create_notification(
             delivery_mode=aio_pika.DeliveryMode.PERSISTENT
         )
 
-        await exchange.publish(message, routing_key='welcome')
+        await exchange.publish(message, routing_key='welcome23')
 
     return notification
