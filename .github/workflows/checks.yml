@@ -48,8 +48,9 @@ jobs:
     steps:
       - name: Set message
         id: set_message
+        #           ref_name=$(basename ${{ github.event.pull_request.head.ref }})
         run: |
-          ref_name=$(basename ${{ github.event.pull_request.head.ref }})
+          ref_name=${{ github.ref_name }}
           if [[ "${{ needs.linters.result }}" == 'failure' ]]; then
             echo "MESSAGE=${{ vars.PROJECT_NAME }}: Pipeline for ${ref_name} finished with error." >> $GITHUB_ENV
           else
