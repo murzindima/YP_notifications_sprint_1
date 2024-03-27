@@ -9,6 +9,17 @@ services:
     ports:
       - "8080:80"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_spr10
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    expose:
+      - 5672
+      - 15672
+
   redis:
     image: redis:7.2.3-alpine
     container_name: redis_spr10
@@ -24,13 +35,13 @@ services:
     expose:
       - 5432
 
-  postgres-notificationsdb:
-    image: postgres:15
-    container_name: postgres_moviesdb_spr10
-    restart: always
-    env_file: notifications_service/.env
-    expose:
-      - 5432
+#  postgres-notificationsdb:
+#    image: postgres:15
+#    container_name: postgres_moviesdb_spr10
+#    restart: always
+#    env_file: notifications_api/.env
+#    expose:
+#      - 5432
 
   auth-service:
     build: auth_service

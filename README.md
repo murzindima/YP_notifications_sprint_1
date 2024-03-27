@@ -8,7 +8,7 @@ https://github.com/murzindima/notifications_sprint_1
 
 ## Description
 
-The project is a monorepo with multiple services. 
+The project is a monorepo with multiple services.
 The services are:
 
 - notifications api service
@@ -64,11 +64,11 @@ The databases are created automatically. But you must create tables and so on ma
 To create the tables for the auth service, you must run the following command:
 
 ```bash
-docker exec -it auth_service_spr9 alembic upgrade head
-docker exec -it auth_service_spr9 python src/tools/init_db.py create-permissions
-docker exec -it auth_service_spr9 python src/tools/init_db.py create-roles
-docker exec -it auth_service_spr9 python src/tools/init_db.py assign-permissions-to-roles
-docker exec -it auth_service_spr9 python src/tools/init_db.py create-admin a@b.com 123qwe Joe Doe
+docker exec -it auth_service_spr10 alembic upgrade head
+docker exec -it auth_service_spr10 python src/tools/init_db.py create-permissions
+docker exec -it auth_service_spr10 python src/tools/init_db.py create-roles
+docker exec -it auth_service_spr10 python src/tools/init_db.py assign-permissions-to-roles
+docker exec -it auth_service_spr10 python src/tools/init_db.py create-admin a@b.com 123qwe Joe Doe
 ```
 
 ## About the authorization and authentication
