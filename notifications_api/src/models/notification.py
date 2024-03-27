@@ -1,19 +1,27 @@
+import enum
 import uuid
 
-from sqlalchemy import Column, String, Text
+from sqlalchemy import Column, String, Text, DateTime, func, Enum
 from sqlalchemy.dialects.postgresql import UUID
 
-# from sqlalchemy.orm import relationship
-
 from src.db.postgres import Base
+
+
+# from sqlalchemy.orm import relationship
 
 # from src.models.role_permission import RolePermission
 
 
-class Notification(Base):
-    """Model representing a notification template."""
+class DeliveryStatus(enum.Enum):
+    pending = 'pending'
+    sent = 'sent'
+    failed = 'failed'
 
-    __tablename__ = "templates"
+
+class Notification(Base):
+    """Model representing an individual notification."""
+
+    __tablename__ = "notifications"
 
     id = Column(
         UUID(as_uuid=True),
@@ -22,10 +30,12 @@ class Notification(Base):
         unique=True,
         nullable=False,
     )
-    name = Column(String(255), nullable=False, unique=True)
-    description = Column(String(500))
-    template_content = Column(Text, nullable=False)
+    recipient_email = Column(String(255), nullable=False)
+    template = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    sent_at = Column(DateTime(timezone=True))
+    status = Column(Enum(DeliveryStatus), default=DeliveryStatus.pending, nullable=False)
 
     def __repr__(self) -> str:
-        """String representation of the Template object."""
-        return f"<Template {self.name}>"
+        """String representation of the Notification object."""
+        return f"<Notification to {self.recipient_email}>"

@@ -5,17 +5,17 @@ from pydantic import BaseModel
 class NotificationCreate(BaseModel):
     """Schema for creating a new template."""
 
-    name: str
-    description: str | None = None
+    template_id: UUID | str
     template_content: str
+    recipient_email: str
 
 
 class Notification(BaseModel):
     """Schema for representing a template."""
 
     id: UUID
-    name: str
-    description: str | None
+    recipient_email: str
+    template_id: UUID | str
     template_content: str
 
     class Config:

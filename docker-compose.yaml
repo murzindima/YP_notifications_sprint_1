@@ -68,7 +68,16 @@ services:
     env_file: notifications_admin_panel/.env
     expose:
       - 8000
-    ports:
-      - "8000:8000"
+    depends_on:
+      - postgres-notifications
+
+  notifications-api-service:
+    build: notifications_api
+    image: notifications_api_spr10
+    container_name: notifications_api_spr10
+    restart: always
+    env_file: notifications_api/.env
+    expose:
+      - 8000
     depends_on:
       - postgres-notifications
