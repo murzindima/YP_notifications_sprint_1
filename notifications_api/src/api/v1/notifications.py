@@ -1,47 +1,19 @@
-from http import HTTPStatus
+from fastapi import APIRouter, Depends, status
 
-from fastapi import APIRouter, Depends, HTTPException, status
-
-from src.core.messages import TEMPLATE_NOT_FOUND, TEMPLATES_NOT_FOUND
-from src.schemas.template import Template as TemplateSchema
-from src.schemas.template import TemplateCreate as TemplateCreateSchema
-from src.services.template import TemplateService, get_template_service
+from src.schemas.notification import Notification as NotificationSchema
+from src.schemas.notification import NotificationCreate as NotificationCreateSchema
+from src.services.notification import NotificationService, get_notification_service
 
 router = APIRouter()
 
 
-@router.post("/", response_model=TemplateSchema, status_code=status.HTTP_201_CREATED)
-async def create_template(
-    template_data: TemplateCreateSchema,
-    template_service: TemplateService = Depends(get_template_service)
-) -> TemplateSchema:
-    """Creates a new template."""
-    template = await template_service.create_model(template_data)
-    return template
-
-
-@router.get("/", response_model=list[TemplateSchema], status_code=status.HTTP_200_OK)
-async def all_templates(
-    template_service: TemplateService = Depends(get_template_service),
-) -> list[TemplateSchema]:
-    """Returns all templates with pagination."""
-    templates = await template_service.get_all_models()
-
-    if not templates:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATES_NOT_FOUND
-        )
-
-    return [TemplateSchema(**template.model_dump()) for template in templates]
-
-
-@router.get("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
-async def template_details(
-    template_id: str, template_service: TemplateService = Depends(get_template_service)
-) -> TemplateSchema:
-    """Returns the template by identifier."""
-    template = await template_service.get_model_by_id(template_id)
-    if not template:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATE_NOT_FOUND)
-
-    return TemplateSchema(**template.model_dump())
+@router.post(
+    "/", response_model=NotificationSchema, status_code=status.HTTP_201_CREATED
+)
+async def create_notifications(
+    notification: NotificationCreateSchema,
+    notification_service: NotificationService = Depends(get_notification_service),
+) -> NotificationSchema:
+    """Creates a new notification."""
+    notification = await notification_service.create_model(notification)
+    return notification

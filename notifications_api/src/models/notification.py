@@ -10,7 +10,7 @@ from src.db.postgres import Base
 # from src.models.role_permission import RolePermission
 
 
-class Template(Base):
+class Notification(Base):
     """Model representing a notification template."""
 
     __tablename__ = "templates"

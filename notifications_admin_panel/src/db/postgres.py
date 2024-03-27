@@ -19,14 +19,3 @@ async_session = sessionmaker(
 async def get_session() -> AsyncSession:
     async with async_session() as session:
         yield session
-
-
-async def create_database() -> None:
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
-async def purge_database() -> None:
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.execute(text("DROP TYPE IF EXISTS roletype;"))  # TODO remove this

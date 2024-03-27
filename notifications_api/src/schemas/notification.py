@@ -2,7 +2,7 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class TemplateCreate(BaseModel):
+class NotificationCreate(BaseModel):
     """Schema for creating a new template."""
 
     name: str
@@ -10,15 +10,7 @@ class TemplateCreate(BaseModel):
     template_content: str
 
 
-class TemplateUpdate(BaseModel):
-    """Schema for updating an existing template."""
-
-    name: str | None = None
-    description: str | None = None
-    template_content: str | None = None
-
-
-class Template(BaseModel):
+class Notification(BaseModel):
     """Schema for representing a template."""
 
     id: UUID

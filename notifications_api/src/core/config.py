@@ -35,6 +35,16 @@ class PostgresSettings(BaseConfig):
         env_prefix = "postgres_"
 
 
+class RabbitMQSettings(BaseConfig):
+    host: str = "localhost"
+    port: int = 5672
+    username: str = "guest"
+    password: str = "guest"
+
+    class Config:
+        env_prefix = "rabbitmq_"
+
+
 class JaegerSettings(BaseConfig):
     host: str = "localhost"
     port: int = 6831
@@ -44,6 +54,7 @@ class JaegerSettings(BaseConfig):
 
 
 postgres_settings = PostgresSettings()
+rabbitmq_settings = RabbitMQSettings()
 jaeger_settings = JaegerSettings()
 app_settings = AppSettings()
 logging_config.dictConfig(LOGGING)
