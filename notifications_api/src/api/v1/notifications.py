@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from src.schemas.notification import Notification as NotificationSchema
 from src.schemas.notification import NotificationCreate as NotificationCreateSchema
 from src.services.notification import NotificationService, get_notification_service
+from src.services.template import TemplateService, get_template_service
 
 router = APIRouter()
 
@@ -13,12 +14,18 @@ router = APIRouter()
 async def create_notification(
     notification: NotificationCreateSchema,
     notification_service: NotificationService = Depends(get_notification_service),
+    template_service: TemplateService = Depends(get_template_service),
 ) -> NotificationSchema:
     """Creates a new notification."""
-    template = await notification_service.get_model_by_id(notification.template_id)
-    if not template:
+    template_raw = await template_service.get_model_by_id(str(notification.template_id))
+    if not template_raw:
         raise HTTPException(status_code=404, detail="Template not found")
 
-    notification_id = await notification_service.create_model(notification)
+    from jinja2 import Template
+    template = Template(template_raw.template_content)
+    template_rendered = template.render(**notification.template_content)
+    notification.template_rendered = template_rendered
 
-    return {"notification_id": notification_id, "message": "Notification queued."}
+    notification = await notification_service.create_model(notification)
+
+    return notification
