@@ -2,10 +2,9 @@ from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from core.messages import TEMPLATE_NOT_FOUND, TEMPLATES_NOT_FOUND
-from queries.template import TemplateFilter, SearchTemplateFilter
-from schemas.template import Template as TemplateSchema
-from services.template import TemplateService, get_template_service
+from src.core.messages import TEMPLATE_NOT_FOUND, TEMPLATES_NOT_FOUND
+from src.schemas.template import Template as TemplateSchema
+from src.services.template import TemplateService, get_template_service
 
 router = APIRouter()
 
@@ -13,10 +12,9 @@ router = APIRouter()
 @router.get("/", response_model=list[TemplateSchema])
 async def all_templates(
     template_service: TemplateService = Depends(get_template_service),
-    template_filter: TemplateFilter = Depends(),
 ) -> list[TemplateSchema]:
     """Returns all templates with pagination."""
-    templates = await template_service.get_all_models(template_filter)
+    templates = await template_service.get_all_models()
 
     if not templates:
         raise HTTPException(

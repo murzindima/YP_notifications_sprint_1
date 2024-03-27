@@ -1,4 +1,4 @@
-from queries.base import BaseFilter
+from src.queries.base import BaseFilter
 
 
 class TemplateFilter(BaseFilter):

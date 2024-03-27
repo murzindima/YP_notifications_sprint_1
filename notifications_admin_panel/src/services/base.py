@@ -23,7 +23,7 @@ class BaseService[M: BaseModel]:
 
         return [self.model_schema_class.model_validate(model) for model in db_models]
 
-    async def get_model_by_id(self, model_id: UUID) -> M | None:
+    async def get_model_by_id(self, model_id: UUID | str) -> M | None:
         """Retrieve a model by identifier."""
         db_model = await self.postgres_service.get_by_id(model_id)
         if not db_model:
@@ -44,7 +44,7 @@ class BaseService[M: BaseModel]:
 
         return self.model_schema_class.model_validate(db_model)
 
-    async def delete_model(self, model_id: UUID) -> M | None:
+    async def delete_model(self, model_id: UUID | str) -> M | None:
         """Delete a model by identifier."""
         db_model = await self.postgres_service.delete(model_id)
         if not db_model:
