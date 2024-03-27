@@ -1,15 +1,26 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.core.messages import TEMPLATE_NOT_FOUND, TEMPLATES_NOT_FOUND
 from src.schemas.template import Template as TemplateSchema
+from src.schemas.template import TemplateCreate as TemplateCreateSchema
 from src.services.template import TemplateService, get_template_service
 
 router = APIRouter()
 
 
-@router.get("/", response_model=list[TemplateSchema])
+@router.post("/", response_model=TemplateSchema, status_code=status.HTTP_201_CREATED)
+async def create_template(
+    template_data: TemplateCreateSchema,
+    template_service: TemplateService = Depends(get_template_service)
+) -> TemplateSchema:
+    """Creates a new template."""
+    template = await template_service.create_model(template_data)
+    return template
+
+
+@router.get("/", response_model=list[TemplateSchema], status_code=status.HTTP_200_OK)
 async def all_templates(
     template_service: TemplateService = Depends(get_template_service),
 ) -> list[TemplateSchema]:
@@ -24,7 +35,7 @@ async def all_templates(
     return [TemplateSchema(**template.model_dump()) for template in templates]
 
 
-@router.get("/{template_id}", response_model=TemplateSchema)
+@router.get("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
 async def template_details(
     template_id: str, template_service: TemplateService = Depends(get_template_service)
 ) -> TemplateSchema:
