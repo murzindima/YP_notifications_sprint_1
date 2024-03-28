@@ -1,8 +1,4 @@
-import json
-
-import aio_pika
 from fastapi import APIRouter, Depends, status, HTTPException
-from jinja2 import Template
 
 from src.schemas.notification import Notification as NotificationSchema
 from src.schemas.notification import NotificationCreate as NotificationCreateSchema
