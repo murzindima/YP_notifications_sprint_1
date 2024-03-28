@@ -12,12 +12,11 @@ https://github.com/murzindima/notifications_sprint_1
 The project is a monorepo with multiple services.
 The services are:
 
-- notifications api service
-- notifications worker service
-- notifications admin panel service
-- auth api service
-- postgres for auth service
-- postgres for notifications service
+- notifications api
+- notifications worker
+- auth api
+- postgres for auth api
+- postgres for notifications api
 - rabbitmq
 - NGINX
 
@@ -32,10 +31,9 @@ Configuration made by .env files. Each service has its own .env file in the root
 
 ## About the repo structure
 
-notifications_api_service is a FastAPI service for notifications.
-notifications_worker_service is a Celery worker for notifications.
-notifications_admin_panel_service is a Django service for the admin panel.
-auth_api_service is a FastAPI service for authentication and authorization.
+notifications_api is a FastAPI service for notifications.
+notifications_worker is a Celery worker for notifications.
+auth_api is a FastAPI service for authentication and authorization.
 nginx is the NGINX proxy.
 
 so, you can find the .env.example file in auth_api_service, notifications_api_service, notifications_admin_panel_service, and notifications_worker_service directories.
@@ -43,20 +41,18 @@ so, you can find the .env.example file in auth_api_service, notifications_api_se
 About the NGINX hosts. The NGINX is set up to listen to the following hosts:
 
 - notifications-api
-- notifications-admin-panel
 - auth-api
 
 You must add the following line to your /etc/hosts file:
 
 ```bash
-127.0.0.1 auth-api notifications-api notifications-admin-panel
+127.0.0.1 auth-api notifications-api
 ```
 
 The services are accessible through the following URLs:
 
 - auth-api: http://auth-api:8080/api/openapi
 - notifications-api: http://notifications-api:8080/api/openapi
-- notifications-admin-panel: http://notifications-admin-panel:8080/admin
 
 ## How to prepare the databases
 
@@ -71,6 +67,11 @@ docker exec -it auth_service_spr10 python src/tools/init_db.py create-roles
 docker exec -it auth_service_spr10 python src/tools/init_db.py assign-permissions-to-roles
 docker exec -it auth_service_spr10 python src/tools/init_db.py create-admin a@b.com 123qwe Joe Doe
 ```
+
+To create the tables for the notifications service, you must run the following command:
+
+```bash
+docker exec -it notifications_api_spr10 alembic upgrade head
 
 ## About the authorization and authentication
 
