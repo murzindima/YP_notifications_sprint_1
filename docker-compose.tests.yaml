@@ -124,6 +124,8 @@ services:
     environment:
       <<: *notification-env
       RUN_CMD: tests
+      AUTH_API_URL: http://auth-api/api/v1
+      NOTIFICATIONS_API_URL: http://notifications-api/api/v1
     expose:
       - 8000
     depends_on:

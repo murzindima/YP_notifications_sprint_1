@@ -24,13 +24,13 @@ run_tests()
 {
   pip install pytest-asyncio==0.23.4a2 && \
   # python -m tests.functional.utils.wait_for_dependencies && \
+  sleep 10
   pytest -vvvs tests/
 }
 
 run_migrations()
 {
   alembic upgrade head
-  sleep 30
 }
 
 help()
