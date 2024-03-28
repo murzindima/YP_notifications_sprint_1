@@ -20,7 +20,7 @@ async def create_notification(
     template_service: TemplateService = Depends(get_template_service),
 ) -> NotificationSchema:
     """Creates a new notification."""
-    template_raw = await template_service.get_model_by_id(str(notification.template_id))
+    template_raw = await template_service.get_model_by_id(notification.template_id)
     if not template_raw:
         raise HTTPException(status_code=404, detail="Template not found")
 
