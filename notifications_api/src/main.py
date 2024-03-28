@@ -1,7 +1,7 @@
 import logging
 
 import uvicorn
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, status, Depends
 from fastapi.responses import ORJSONResponse
 from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
@@ -11,6 +11,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from pydantic import ValidationError
 
+from src.middleware.external_auth import security_jwt
 from src.api.v1 import notifications
 from src.api.v1 import templates
 from src.core import config
@@ -56,11 +57,10 @@ async def before_request(request: Request, call_next):
     return response
 
 
-app.include_router(templates.router, prefix="/api/v1/templates", tags=["templates"])
+app.include_router(templates.router, prefix="/api/v1/templates", tags=["templates"], dependencies=[Depends(security_jwt)])
 app.include_router(
-    notifications.router, prefix="/api/v1/notifications", tags=["notifications"]
+    notifications.router, prefix="/api/v1/notifications", tags=["notifications"], dependencies=[Depends(security_jwt)]
 )
-# app.include_router(films.router, prefix="/api/v1/templates", tags=["templates"], dependencies=[Depends(security_jwt)])
 
 
 @app.exception_handler(ValidationError)
