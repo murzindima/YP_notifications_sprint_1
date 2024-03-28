@@ -9,6 +9,14 @@ services:
     ports:
       - "8080:80"
 
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    container_name: jaeger_spr9
+    restart: always
+    expose:
+      - 16686
+      - 6831/udp
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq_spr10
