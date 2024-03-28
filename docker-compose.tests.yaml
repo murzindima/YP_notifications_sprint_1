@@ -45,7 +45,7 @@ services:
           - auth-api
     depends_on:
       - auth-service
-      - notification-service
+      - notifications-service
     expose:
       - 80
   
@@ -71,7 +71,7 @@ services:
     expose:
       - 5432
   
-  postgres-notificationdb:
+  postgres-notifications:
     image: postgres:15
     environment:
       <<: *notification-env
@@ -99,33 +99,33 @@ services:
       - postgres-authdb
       - redis
 
-  notification-service:
-    build: notification_service
-    image: notification_service_spr10
+  notifications-service:
+    build: notifications_api
+    image: notifications_api_spr10
     environment:
       <<: *notification-env
     expose:
       - 8000
     depends_on:
-      - postgres-notificationdb
+      - postgres-notifications
 
   notifications-service-migrations:
-    image: notification_service_spr10
+    image: notifications_api_spr10
     environment:
       <<: *notification-env
       RUN_CMD: migrations
     expose:
       - 8000
     depends_on:
-      - postgres-notificationdb
+      - postgres-notifications
   
-  notification-service-tests:
-    build: notification_service
-    image: notification_service_spr10
+  notifications-service-tests:
+    image: notifications_api_spr10
     environment:
       <<: *notification-env
       RUN_CMD: tests
     expose:
       - 8000
     depends_on:
-      - postgres-notificationdb
+      - postgres-notifications
+      - rabbitmq

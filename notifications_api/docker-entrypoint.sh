@@ -23,14 +23,14 @@ start_server()
 run_tests()
 {
   pip install pytest-asyncio==0.23.4a2 && \
-  python -m tests.functional.utils.wait_for_dependencies && \
+  # python -m tests.functional.utils.wait_for_dependencies && \
   pytest -vvvs tests/
 }
 
 run_migrations()
 {
   alembic upgrade head
-  python src/tools/init_db.py
+  sleep 30
 }
 
 help()

@@ -7,8 +7,6 @@ from tests.functional.settings import test_settings
 
 EMAIL = "a@b.com"
 PASSWORD = "123qwe"
-USER_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-#MOVIE_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 NOTIFICATIONS_SUB_PATH = "notifications"
 TEMPLATES_SUB_PATH = "templates"
 

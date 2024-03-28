@@ -34,7 +34,7 @@ run_migrations()
   python src/tools/init_db.py create-roles
   python src/tools/init_db.py
   python src/tools/init_db.py create-admin a@b.com 123qwe Joe Doe
-  sleep 300
+  sleep 30
 }
 
 help()
