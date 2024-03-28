@@ -24,20 +24,17 @@ async def create_notification(
     template_service: TemplateService = Depends(get_template_service),
 ) -> NotificationSchema:
     """Creates a new notification."""
-    template_raw = await template_service.get_model_by_id(notification.template_id)
-    if not template_raw:
+    template = await template_service.get_model_by_id(notification.template_id)
+    if not template:
         raise HTTPException(status_code=404, detail="Template not found")
-
-    template = Template(template_raw.template_content)
-    template_rendered = template.render(**notification.template_content)
-
-    notification.template_rendered = template_rendered
 
     created_notification = await notification_service.create_model(notification)
 
     message_body = {
-        "recipient_email": notification.recipient_email,
-        "template_rendered": template_rendered,
+        "notification_id": str(created_notification.id),
+        "recipients": notification.recipients,
+        "template": template.template,
+        "context": notification.context,
     }
     await rabbitmq_service.publish_message(
         exchange_name="notifications", routing_key="notifications", message=message_body

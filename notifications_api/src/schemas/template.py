@@ -7,7 +7,7 @@ class TemplateCreate(BaseModel):
 
     name: str
     description: str | None = None
-    template_content: str
+    template: str
 
 
 class TemplateUpdate(BaseModel):
@@ -15,7 +15,7 @@ class TemplateUpdate(BaseModel):
 
     name: str | None = None
     description: str | None = None
-    template_content: str | None = None
+    template: str | None = None
 
 
 class Template(BaseModel):
@@ -24,7 +24,7 @@ class Template(BaseModel):
     id: UUID
     name: str
     description: str | None
-    template_content: str
+    template: str
 
     class Config:
         from_attributes = True

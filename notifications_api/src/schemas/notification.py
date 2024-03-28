@@ -6,19 +6,17 @@ class NotificationCreate(BaseModel):
     """Schema for creating a new template."""
 
     template_id: UUID | str
-    template_content: dict
-    template_rendered: str | None = None
-    recipient_email: str
+    context: dict
+    recipients: list[str]
 
 
 class Notification(BaseModel):
     """Schema for representing a template."""
 
     id: UUID
-    recipient_email: str
+    recipients: list[str]
     template_id: UUID | str
-    template_content: dict
-    template_rendered: str | None
+    context: dict
 
     class Config:
         from_attributes = True

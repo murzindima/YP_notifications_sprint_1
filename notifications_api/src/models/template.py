@@ -24,7 +24,7 @@ class Template(Base):
     )
     name = Column(String(255), nullable=False, unique=True)
     description = Column(String(500))
-    template_content = Column(Text, nullable=False)
+    template = Column(Text, nullable=False)
 
     def __repr__(self) -> str:
         """String representation of the Template object."""

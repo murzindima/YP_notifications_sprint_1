@@ -30,10 +30,9 @@ class Notification(Base):
         unique=True,
         nullable=False,
     )
-    recipient_email = Column(String(255), nullable=False)
+    recipients = Column(JSON, nullable=False)
     template_id = Column(UUID(as_uuid=True), nullable=False)
-    template_content = Column(JSON)
-    template_rendered = Column(Text)  # TODO: use template_id to reference the template
+    context = Column(JSON)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     sent_at = Column(DateTime(timezone=True))
     status = Column(

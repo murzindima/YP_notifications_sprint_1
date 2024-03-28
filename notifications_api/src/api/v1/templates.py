@@ -13,12 +13,12 @@ router = APIRouter()
 
 @router.post("/", response_model=TemplateSchema, status_code=status.HTTP_201_CREATED)
 async def create_template(
-    template_data: TemplateCreateSchema,
+    template: TemplateCreateSchema,
     template_service: TemplateService = Depends(get_template_service),
 ) -> TemplateSchema:
     """Creates a new template."""
-    template = await template_service.create_model(template_data)
-    return template
+    _template = await template_service.create_model(template)
+    return _template
 
 
 @router.get("/", response_model=list[TemplateSchema], status_code=status.HTTP_200_OK)
@@ -55,15 +55,15 @@ async def template_details(
 )
 async def update_template(
     template_id: UUID,
-    template_data: TemplateCreateSchema,
+    template: TemplateCreateSchema,
     template_service: TemplateService = Depends(get_template_service),
 ) -> TemplateSchema:
     """Updates the template by identifier."""
-    template = await template_service.update_model(template_id, template_data)
-    if not template:
+    _template = await template_service.update_model(template_id, template)
+    if not _template:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATE_NOT_FOUND)
 
-    return TemplateSchema(**template.model_dump())
+    return TemplateSchema(**_template.model_dump())
 
 
 @router.delete(
