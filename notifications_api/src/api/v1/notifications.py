@@ -7,7 +7,10 @@ from jinja2 import Template
 from src.schemas.notification import Notification as NotificationSchema
 from src.schemas.notification import NotificationCreate as NotificationCreateSchema
 from src.services.notification import NotificationService, get_notification_service
+from src.services.rabbitmq import RabbitMQPublisherService
 from src.services.template import TemplateService, get_template_service
+
+rabbitmq_service = RabbitMQPublisherService()
 
 router = APIRouter()
 
@@ -32,27 +35,12 @@ async def create_notification(
 
     created_notification = await notification_service.create_model(notification)
 
-    connection = await aio_pika.connect_robust("amqp://user:password@rabbitmq/")
-    async with connection:
-        channel = await connection.channel()
-
-        exchange = await channel.declare_exchange(
-            "emails12", aio_pika.ExchangeType.DIRECT, durable=True
-        )
-        queue = await channel.declare_queue("welcome23", durable=True)
-        await queue.bind(exchange, "welcome23")
-
-        message_body = json.dumps(
-            {
-                "recipient_email": notification.recipient_email,
-                "template_rendered": template_rendered,
-            }
-        ).encode()
-
-        message = aio_pika.Message(
-            body=message_body, delivery_mode=aio_pika.DeliveryMode.PERSISTENT
-        )
-
-        await exchange.publish(message, routing_key="welcome23")
+    message_body = {
+        "recipient_email": notification.recipient_email,
+        "template_rendered": template_rendered,
+    }
+    await rabbitmq_service.publish_message(
+        exchange_name="notifications", routing_key="notifications", message=message_body
+    )
 
     return created_notification
