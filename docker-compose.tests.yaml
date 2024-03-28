@@ -48,6 +48,8 @@ services:
       - notifications-service
     expose:
       - 80
+    ports:
+      - "8080:80"
   
   rabbitmq:
     image: rabbitmq:3-management

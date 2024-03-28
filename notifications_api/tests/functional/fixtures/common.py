@@ -13,12 +13,12 @@ TEMPLATES_SUB_PATH = "templates"
 
 @pytest.fixture
 def notifications_api_templates_url():
-    return f"{test_settings.notifications_api_url}/{TEMPLATES_SUB_PATH}/"
+    return f"{test_settings.notifications_api_url}/{TEMPLATES_SUB_PATH}"
 
 
 @pytest.fixture
 def notifications_api_notifications_url():
-    return f"{test_settings.notifications_api_url}/{NOTIFICATIONS_SUB_PATH}/"
+    return f"{test_settings.notifications_api_url}/{NOTIFICATIONS_SUB_PATH}"
 
 
 @pytest_asyncio.fixture(scope="session")
