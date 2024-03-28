@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "url_shorter"
+version = "0.1.0"
+description = ""
+authors = ["Ilyas <Ilyas2707@yandex.ru>", "Dmitry Murzin <dima@murzin.life>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.2"
+flask-migrate = "^4.0.7"
+flask-sqlalchemy = "^3.1.1"
+unicorn = "^2.0.1.post1"
+gunicorn = "^21.2.0"
+psycopg2 = "^2.9.9"
+python-decouple = "^3.8"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+extend-ignore = ["WPS332"]
+max-line-length = 120
+exclude = ["logger.py"]
+per-file-ignores = [
+  "__init__.py:D104",
+  "config.py:WPS432,D101,D106"
+]
+
+[tool.isort]
+line_length = 120
+
+[tool.black]
+line-length = 120
