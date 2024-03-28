@@ -19,24 +19,20 @@ x-auth-migrations-env: &auth-migrations-env
   <<: *auth-env
   RUN_CMD: migrations
 
-x-ugc-env: &ugc-env
-  JAEGER_ENABLE_TRACER: "False"
-  SENTRY_ENABLE_SDK: "False"
-  SENTRY_ENABLE_TRACING: "False"
-  APP_AUTHJWT_SECRET_KEY: secretsecret
-  MONGO_HOST: mongo
-  MONGO_USER: root
-  MONGO_PASSWORD: example
+x-notification-env: &notification-env
+  POSTGRES_USER: app
+  POSTGRES_PASSWORD: 123qwe
+  POSTGRES_DB: notifications
+  POSTGRES_DBNAME: notifications
+  POSTGRES_HOST: postgres-notifications
+  POSTGRES_PORT: 5432
+  RABBITMQ_HOST: rabbitmq
+  RABBITMQ_USERNAME: user
+  RABBITMQ_PASSWORD: password
 
-x-ugc-tests-env: &ugc-tests-env
-  <<: *ugc-env
-  RUN_CMD: tests
-  AUTH_API_URL: http://auth-api/api/v1
-  UGC_API_URL: http://ugc-operations/api/v1
-
-x-mongo-env: &mongo-env
-  MONGO_INITDB_ROOT_USERNAME: root
-  MONGO_INITDB_ROOT_PASSWORD: example
+x-rabbitmq-env: &rabbitmq-env
+  RABBITMQ_DEFAULT_USER: user
+  RABBITMQ_DEFAULT_PASS: password
 
 services:
   nginx:
@@ -53,12 +49,15 @@ services:
     expose:
       - 80
   
-  mongo:
-    image: mongo
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_spr10
+    restart: always
     environment:
-      <<: *mongo-env
+      <<: *rabbitmq-env
     expose:
-      - 27017
+      - 5672
+      - 15672
 
   redis:
     image: redis:7.2.3-alpine
@@ -71,10 +70,17 @@ services:
       <<: *auth-env
     expose:
       - 5432
+  
+  postgres-notificationdb:
+    image: postgres:15
+    environment:
+      <<: *notification-env
+    expose:
+      - 5432
 
   auth-service:
     build: auth_service
-    image: auth_service_spr9
+    image: auth_service_spr10
     environment:
       <<: *auth-env
     expose:
@@ -84,7 +90,7 @@ services:
       - redis
 
   auth-service-migrations:
-    image: auth_service_spr9
+    image: auth_service_spr10
     environment:
       <<: *auth-migrations-env
     expose:
@@ -93,21 +99,33 @@ services:
       - postgres-authdb
       - redis
 
-  ugc-operations-service:
-    build: ugc_operations_service
-    image: ugc_operations_service_spr9
+  notification-service:
+    build: notification_service
+    image: notification_service_spr10
     environment:
-      <<: *ugc-env
+      <<: *notification-env
     expose:
       - 8000
-
-  ugc_tests:
-    image: ugc_operations_service_spr9
-    environment:
-      <<: *ugc-tests-env
     depends_on:
-      - ugc-operations-service
-      - auth-service
-      - auth-service-migrations
-      - mongo
-      - redis
+      - postgres-notificationdb
+
+  notifications-service-migrations:
+    image: notification_service_spr10
+    environment:
+      <<: *notification-env
+      RUN_CMD: migrations
+    expose:
+      - 8000
+    depends_on:
+      - postgres-notificationdb
+  
+  notification-service-tests:
+    build: notification_service
+    image: notification_service_spr10
+    environment:
+      <<: *notification-env
+      RUN_CMD: tests
+    expose:
+      - 8000
+    depends_on:
+      - postgres-notificationdb
