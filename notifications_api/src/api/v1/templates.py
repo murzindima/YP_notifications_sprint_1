@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -37,10 +38,36 @@ async def all_templates(
 
 @router.get("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
 async def template_details(
-    template_id: str, template_service: TemplateService = Depends(get_template_service)
+    template_id: UUID, template_service: TemplateService = Depends(get_template_service)
 ) -> TemplateSchema:
     """Returns the template by identifier."""
     template = await template_service.get_model_by_id(template_id)
+    if not template:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATE_NOT_FOUND)
+
+    return TemplateSchema(**template.model_dump())
+
+
+@router.put("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
+async def update_template(
+    template_id: UUID,
+    template_data: TemplateCreateSchema,
+    template_service: TemplateService = Depends(get_template_service)
+) -> TemplateSchema:
+    """Updates the template by identifier."""
+    template = await template_service.update_model(template_id, template_data)
+    if not template:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATE_NOT_FOUND)
+
+    return TemplateSchema(**template.model_dump())
+
+
+@router.delete("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
+async def delete_template(
+    template_id: UUID, template_service: TemplateService = Depends(get_template_service)
+) -> TemplateSchema:
+    """Deletes the template by identifier."""
+    template = await template_service.delete_model(template_id)
     if not template:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=TEMPLATE_NOT_FOUND)
 
