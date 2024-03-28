@@ -12,6 +12,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from pydantic import ValidationError
 
 from src.api.v1 import notifications
+from src.api.v1 import templates
 from src.core import config
 from src.core.logger import LOGGING
 
@@ -55,9 +56,8 @@ async def before_request(request: Request, call_next):
     return response
 
 
-app.include_router(
-    notifications.router, prefix="/api/v1/notifications", tags=["templates"]
-)
+app.include_router(templates.router, prefix="/api/v1/templates", tags=["templates"])
+app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["notifications"])
 # app.include_router(films.router, prefix="/api/v1/templates", tags=["templates"], dependencies=[Depends(security_jwt)])
 
 

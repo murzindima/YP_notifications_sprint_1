@@ -42,7 +42,7 @@ services:
     image: postgres:15
     container_name: postgres_moviesdb_spr10
     restart: always
-    env_file: notifications_admin_panel/.env
+    env_file: notifications_api/.env
     expose:
       - 5432
     ports:
@@ -60,18 +60,7 @@ services:
       - postgres-authdb
       - redis
 
-  notifications-admin-panel:
-    build: notifications_admin_panel
-    image: notifications_admin_panel_spr10
-    container_name: notifications_admin_panel_spr10
-    restart: always
-    env_file: notifications_admin_panel/.env
-    expose:
-      - 8000
-    depends_on:
-      - postgres-notifications
-
-  notifications-api-service:
+  notifications-service:
     build: notifications_api
     image: notifications_api_spr10
     container_name: notifications_api_spr10

@@ -1,7 +1,10 @@
 from uuid import UUID
 
-from src.services.data_repository.postgres_crud import PostgresCrudService
+from sqlalchemy import select
+
 from src.models.notification import Notification as NotificationModel
+from src.models.template import Template as TemplateModel
+from src.services.data_repository.postgres_crud import PostgresCrudService
 
 
 class PostgresService(PostgresCrudService):
@@ -12,3 +15,17 @@ class PostgresService(PostgresCrudService):
         async with self.session.begin():
             model = await self.session.get(NotificationModel, notification_id)
             return model
+
+    async def get_template(self, template_id: UUID) -> TemplateModel | None:
+        """Retrieve a role."""
+        async with self.session.begin():
+            model = await self.session.get(TemplateModel, template_id)
+            return model
+
+    async def get_template_id_by_name(self, template_name: str) -> UUID | None:
+        """Retrieve a role identifier by name."""
+        async with self.session.begin():
+            stmt = select(TemplateModel.id).where(TemplateModel.name == template_name)
+            result = await self.session.execute(stmt)
+            role_id = result.scalar()
+            return role_id
