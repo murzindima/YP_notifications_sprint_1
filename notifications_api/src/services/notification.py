@@ -21,5 +21,7 @@ def get_notification_service(
     """Dependency function to get an instance of the NotificationService."""
     return NotificationService(
         model_schema_class=NotificationSchema,
-        postgres_service=PostgresService(session=pg_session, model_class=NotificationModel),
+        postgres_service=PostgresService(
+            session=pg_session, model_class=NotificationModel
+        ),
     )

@@ -57,7 +57,9 @@ async def before_request(request: Request, call_next):
 
 
 app.include_router(templates.router, prefix="/api/v1/templates", tags=["templates"])
-app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["notifications"])
+app.include_router(
+    notifications.router, prefix="/api/v1/notifications", tags=["notifications"]
+)
 # app.include_router(films.router, prefix="/api/v1/templates", tags=["templates"], dependencies=[Depends(security_jwt)])
 
 

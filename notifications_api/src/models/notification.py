@@ -13,9 +13,9 @@ from src.db.postgres import Base
 
 
 class DeliveryStatus(enum.Enum):
-    pending = 'pending'
-    sent = 'sent'
-    failed = 'failed'
+    pending = "pending"
+    sent = "sent"
+    failed = "failed"
 
 
 class Notification(Base):
@@ -33,10 +33,12 @@ class Notification(Base):
     recipient_email = Column(String(255), nullable=False)
     template_id = Column(UUID(as_uuid=True), nullable=False)
     template_content = Column(JSON)
-    template_rendered = Column(Text)   # TODO: use template_id to reference the template
+    template_rendered = Column(Text)  # TODO: use template_id to reference the template
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     sent_at = Column(DateTime(timezone=True))
-    status = Column(Enum(DeliveryStatus), default=DeliveryStatus.pending, nullable=False)
+    status = Column(
+        Enum(DeliveryStatus), default=DeliveryStatus.pending, nullable=False
+    )
 
     def __repr__(self) -> str:
         """String representation of the Notification object."""

@@ -14,7 +14,7 @@ router = APIRouter()
 @router.post("/", response_model=TemplateSchema, status_code=status.HTTP_201_CREATED)
 async def create_template(
     template_data: TemplateCreateSchema,
-    template_service: TemplateService = Depends(get_template_service)
+    template_service: TemplateService = Depends(get_template_service),
 ) -> TemplateSchema:
     """Creates a new template."""
     template = await template_service.create_model(template_data)
@@ -36,7 +36,9 @@ async def all_templates(
     return [TemplateSchema(**template.model_dump()) for template in templates]
 
 
-@router.get("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
+@router.get(
+    "/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK
+)
 async def template_details(
     template_id: UUID, template_service: TemplateService = Depends(get_template_service)
 ) -> TemplateSchema:
@@ -48,11 +50,13 @@ async def template_details(
     return TemplateSchema(**template.model_dump())
 
 
-@router.put("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
+@router.put(
+    "/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK
+)
 async def update_template(
     template_id: UUID,
     template_data: TemplateCreateSchema,
-    template_service: TemplateService = Depends(get_template_service)
+    template_service: TemplateService = Depends(get_template_service),
 ) -> TemplateSchema:
     """Updates the template by identifier."""
     template = await template_service.update_model(template_id, template_data)
@@ -62,7 +66,9 @@ async def update_template(
     return TemplateSchema(**template.model_dump())
 
 
-@router.delete("/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{template_id}", response_model=TemplateSchema, status_code=status.HTTP_200_OK
+)
 async def delete_template(
     template_id: UUID, template_service: TemplateService = Depends(get_template_service)
 ) -> TemplateSchema:

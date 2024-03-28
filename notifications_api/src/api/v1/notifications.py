@@ -2,6 +2,7 @@ import json
 
 import aio_pika
 from fastapi import APIRouter, Depends, status, HTTPException
+from jinja2 import Template
 
 from src.schemas.notification import Notification as NotificationSchema
 from src.schemas.notification import NotificationCreate as NotificationCreateSchema
@@ -24,31 +25,34 @@ async def create_notification(
     if not template_raw:
         raise HTTPException(status_code=404, detail="Template not found")
 
-    from jinja2 import Template
     template = Template(template_raw.template_content)
     template_rendered = template.render(**notification.template_content)
+
     notification.template_rendered = template_rendered
 
-    notification = await notification_service.create_model(notification)
+    created_notification = await notification_service.create_model(notification)
 
     connection = await aio_pika.connect_robust("amqp://user:password@rabbitmq/")
     async with connection:
         channel = await connection.channel()
 
-        exchange = await channel.declare_exchange('emails12', aio_pika.ExchangeType.DIRECT, durable=True)
-        queue = await channel.declare_queue('welcome23', durable=True)
+        exchange = await channel.declare_exchange(
+            "emails12", aio_pika.ExchangeType.DIRECT, durable=True
+        )
+        queue = await channel.declare_queue("welcome23", durable=True)
+        await queue.bind(exchange, "welcome23")
 
-        await queue.bind(exchange, 'welcome23')
+        message_body = json.dumps(
+            {
+                "recipient_email": notification.recipient_email,
+                "template_rendered": template_rendered,
+            }
+        ).encode()
 
         message = aio_pika.Message(
-            body=json.dumps({
-                "user_id": 1,
-                "clicked_element": "button1",
-                "click_time": "10:30:00"
-            }).encode(),
-            delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+            body=message_body, delivery_mode=aio_pika.DeliveryMode.PERSISTENT
         )
 
-        await exchange.publish(message, routing_key='welcome23')
+        await exchange.publish(message, routing_key="welcome23")
 
-    return notification
+    return created_notification
