@@ -36,16 +36,16 @@ x-rabbitmq-env: &rabbitmq-env
 
 services:
   nginx:
-    build: ugc_operations_service/nginx_tests
+    build: notifications_api/nginx_tests
     restart: always
     networks:
       default:
         aliases:
-          - ugc-operations
+          - notifications-api
           - auth-api
     depends_on:
       - auth-service
-      - ugc-operations-service
+      - notification-service
     expose:
       - 80
   

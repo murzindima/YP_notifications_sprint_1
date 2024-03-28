@@ -1,19 +1,26 @@
-import time
+import asyncio
 import logging
+import time
 
-from elasticsearch import Elasticsearch
-from redis import Redis
-
-from ..settings import test_settings
+from src.db.mongo import get_mongo_client
 
 
 def check_connection(
-    ping_function, service_name, max_retries=10, initial_sleep_interval=3
+    ping_function,
+    service_name,
+    max_retries=10,
+    initial_sleep_interval=3,
+    is_async=False,
 ):
     sleep_interval = initial_sleep_interval
     for attempt in range(max_retries):
         try:
-            if ping_function():
+            if is_async:
+                success = asyncio.run(ping_function())
+            else:
+                success = ping_function()
+
+            if success:
                 logging.info(f"Successfully connected to {service_name}.")
                 return True
         except Exception as e:
@@ -32,12 +39,7 @@ def check_connection(
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    es_client = Elasticsearch(hosts=test_settings.es_url, verify_certs=False)
-    if not check_connection(es_client.ping, "Elasticsearch"):
-        logging.error("Failed to establish a connection to Elasticsearch. Exiting...")
-        exit(1)
-
-    redis_client = Redis(host=test_settings.redis_host, port=test_settings.redis_port)
-    if not check_connection(redis_client.ping, "Redis"):
-        logging.error("Failed to establish a connection to Redis. Exiting...")
+    mongo_client = get_mongo_client()
+    if not check_connection(mongo_client.server_info(), "MongoDB"):
+        logging.error("Failed to establish a connection to MongoDB. Exiting...")
         exit(1)
