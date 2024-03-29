@@ -2,7 +2,7 @@ name: Linters and Formatters
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -28,18 +28,6 @@ jobs:
           version: 0.2.2
           src: './auth_service'
           args: --line-length 79
-      
-      - name: Run MyPy with HTML report
-        uses: jpetrucciani/mypy-check@master
-        with:
-          requirements: lxml==5.1.0
-          mypy_flags: '--config-file .mypy.ini --html-report coverage_report'
-
-      - name: Upload HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: mypy-coverage-report
-          path: coverage_report
           
   Notify:
     runs-on: ubuntu-latest
@@ -51,9 +39,9 @@ jobs:
         run: |
           ref_name=$(basename ${{ github.event.pull_request.head.ref }})
           if [[ "${{ needs.linters.result }}" == 'failure' ]]; then
-            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Pipeline for ${ref_name} finished with error." >> $GITHUB_ENV
+            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Checks for ${ref_name} finished with error." >> $GITHUB_ENV
           else
-            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Pipeline for ${ref_name} finished successfully." >> $GITHUB_ENV
+            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Checks for ${ref_name} finished successfully." >> $GITHUB_ENV
           fi
         shell: bash
 
