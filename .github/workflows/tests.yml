@@ -15,7 +15,7 @@ jobs:
 
 
       - name: Run tests
-        run: docker-compose -f docker-compose.tests.yaml up --build --exit-code-from ugc_tests --abort-on-container-exit
+        run: docker-compose -f docker-compose.tests.yaml up --build --exit-code-from notifications-service-tests --abort-on-container-exit
 
   Notify:
     runs-on: ubuntu-latest
