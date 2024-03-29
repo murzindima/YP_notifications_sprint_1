@@ -87,3 +87,12 @@ services:
     depends_on:
       - postgres-notifications
       - rabbitmq
+
+  url-shorter:
+    build: url_shorter
+    image: url-shorter_spr10
+    container_name: url-shorter_spr10
+    restart: always
+    env_file: url_shorter/.env
+    expose:
+      - 5000

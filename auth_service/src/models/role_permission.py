@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -11,7 +11,9 @@ class RolePermission(Base):
     __tablename__ = "role_permissions"
 
     role_id = Column(
-        UUID(as_uuid=True), ForeignKey("roles.id", ondelete="CASCADE"), primary_key=True
+        UUID(as_uuid=True),
+        ForeignKey("roles.id", ondelete="CASCADE"),
+        primary_key=True,
     )
     permission_id = Column(
         UUID(as_uuid=True),
@@ -19,9 +21,14 @@ class RolePermission(Base):
         primary_key=True,
     )
 
-    role = relationship("Role", back_populates="permissions", passive_deletes=True)
+    role = relationship(
+        "Role", back_populates="permissions", passive_deletes=True
+    )
     permission = relationship(
-        "Permission", back_populates="roles", passive_deletes=True, lazy="joined"
+        "Permission",
+        back_populates="roles",
+        passive_deletes=True,
+        lazy="joined",
     )
 
     def __repr__(self) -> str:

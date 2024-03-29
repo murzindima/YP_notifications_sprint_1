@@ -5,7 +5,6 @@ import logging
 from redis import Redis
 from sqlalchemy import text
 
-from tests.functional.settings import test_settings
 from src.db.postgres import engine
 from src.core.config import redis_settings
 
@@ -56,6 +55,10 @@ if __name__ == "__main__":
         logging.error("Failed to establish a connection to Redis. Exiting...")
         exit(1)
 
-    if not check_connection(check_postgres_connection, "PostgreSQL", is_async=True):
-        logging.error("Failed to establish a connection to PostgreSQL. Exiting...")
+    if not check_connection(
+        check_postgres_connection, "PostgreSQL", is_async=True
+    ):
+        logging.error(
+            "Failed to establish a connection to PostgreSQL. Exiting..."
+        )
         exit(1)

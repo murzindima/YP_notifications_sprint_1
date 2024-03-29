@@ -7,7 +7,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from src.db.postgres import Base
-from src.models.role_permission import RolePermission
 
 
 @unique
@@ -34,7 +33,10 @@ class Role(Base):
     description = Column(String(500))
 
     permissions = relationship(
-        "RolePermission", back_populates="role", lazy="joined", passive_deletes=True
+        "RolePermission",
+        back_populates="role",
+        lazy="joined",
+        passive_deletes=True,
     )
     users = relationship("User", back_populates="role", passive_deletes=True)
 

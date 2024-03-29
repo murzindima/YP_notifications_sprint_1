@@ -7,8 +7,6 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash
 
 from src.db.postgres import Base
-from src.models.login_history import LoginHistory
-from src.models.oauth_provider import OAuthProvider
 
 
 class User(Base):
@@ -29,7 +27,9 @@ class User(Base):
     last_name = Column(String(50))
     created_at = Column(DateTime, default=datetime.utcnow)
     role_id = Column(
-        UUID(as_uuid=True), ForeignKey("roles.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("roles.id", ondelete="CASCADE"),
+        nullable=False,
     )
     is_deleted = Column(Boolean, default=False)
 

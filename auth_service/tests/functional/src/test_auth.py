@@ -28,7 +28,9 @@ SUB_PATH = "auth"
     ],
 )
 @pytest.mark.asyncio
-async def test_signup_member(api_base_url, get_role_id_member, test_data, expected):
+async def test_signup_member(
+    api_base_url, get_role_id_member, test_data, expected
+):
     test_data["role_id"] = str(get_role_id_member)
     # TODO FIX admin signup
     async with ClientSession() as session:
@@ -107,7 +109,9 @@ async def test_signup_restricted_roles(
     ],
 )
 @pytest.mark.asyncio
-async def test_signup_422(api_base_url, get_role_id_member, test_data, expected):
+async def test_signup_422(
+    api_base_url, get_role_id_member, test_data, expected
+):
     role_id = test_data.get("role_id", None)
     if role_id is None:
         test_data["role_id"] = str(get_role_id_member)
@@ -150,7 +154,10 @@ async def test_login(api_base_url):
             {"email": "a@b", "password": MEMBER_PASSWORD},
             {"status": HTTPStatus.UNPROCESSABLE_ENTITY},
         ),
-        ({"email": "", "password": ""}, {"status": HTTPStatus.UNPROCESSABLE_ENTITY}),
+        (
+            {"email": "", "password": ""},
+            {"status": HTTPStatus.UNPROCESSABLE_ENTITY},
+        ),
         ({"email": ""}, {"status": HTTPStatus.UNPROCESSABLE_ENTITY}),
         ({"password": ""}, {"status": HTTPStatus.UNPROCESSABLE_ENTITY}),
         ({}, {"status": HTTPStatus.UNPROCESSABLE_ENTITY}),
@@ -208,8 +215,8 @@ async def test_logout_refresh(api_base_url, get_jwt_tokens_admin):
 async def test_logout_both_tokens(api_base_url, get_jwt_tokens_admin):
     access_token, refresh_token = get_jwt_tokens_admin
     headers = {
-        "Authorization": "Bearer " + access_token,
-        "Authorization": "Bearer " + refresh_token,
+        "Authorization": "Bearer " + access_token,  # noqa
+        "Authorization": "Bearer " + refresh_token,  # noqa
     }
     async with ClientSession(headers=headers) as session:
         url = f"{api_base_url}/{SUB_PATH}/logout"
@@ -264,8 +271,8 @@ async def test_refresh_tokens_access(api_base_url, get_jwt_tokens_admin):
 async def test_refresh_tokens_both(api_base_url, get_jwt_tokens_admin):
     access_token, refresh_token = get_jwt_tokens_admin
     headers = {
-        "Authorization": "Bearer " + access_token,
-        "Authorization": "Bearer " + refresh_token,
+        "Authorization": "Bearer " + access_token,  # noqa
+        "Authorization": "Bearer " + refresh_token,  # noqa
     }
     async with ClientSession(headers=headers) as session:
         url = f"{api_base_url}/{SUB_PATH}/refresh-tokens"
