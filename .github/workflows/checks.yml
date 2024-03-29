@@ -1,0 +1,56 @@
+name: Linters and Formatters
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  Check:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.11, 3.12]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Lint with Ruff
+        uses: chartboost/ruff-action@v1
+        with:
+          version: 0.2.2
+          src: './auth_service'
+          args: --line-length 79
+          
+  Notify:
+    runs-on: ubuntu-latest
+    needs: Check
+    if: ${{ always() }}
+    steps:
+      - name: Set message
+        id: set_message
+        run: |
+          ref_name=$(basename ${{ github.event.pull_request.head.ref }})
+          if [[ "${{ needs.linters.result }}" == 'failure' ]]; then
+            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Checks for ${ref_name} finished with error." >> $GITHUB_ENV
+          else
+            echo "MESSAGE=${{ vars.PROJECT_NAME }}: Checks for ${ref_name} finished successfully." >> $GITHUB_ENV
+          fi
+        shell: bash
+
+      - name: Debug message
+        run: |
+          echo "Debug: Message is: $MESSAGE"
+      - name: Send message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: ${{ env.MESSAGE }}

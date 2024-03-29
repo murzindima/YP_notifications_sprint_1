@@ -1,0 +1,104 @@
+version: "3"
+
+services:
+
+  nginx:
+    build: nginx
+    container_name: nginx_spr10
+    restart: always
+    networks:
+      default:
+        aliases:
+          - notifications-api
+          - auth-api
+    ports:
+      - "8080:80"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    container_name: jaeger_spr9
+    restart: always
+    expose:
+      - 16686
+      - 6831/udp
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_spr10
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    expose:
+      - 5672
+      - 15672
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  redis:
+    image: redis:7.2.3-alpine
+    container_name: redis_spr10
+    restart: always
+    expose:
+      - 6379
+
+  postgres-authdb:
+    image: postgres:15
+    container_name: postgres_authdb_spr10
+    restart: always
+    env_file: auth_service/.env
+    expose:
+      - 5432
+
+  postgres-notifications:
+    image: postgres:15
+    container_name: postgres_notifications_spr10
+    restart: always
+    env_file: notifications_api/.env
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+
+  auth-service:
+    build: auth_service
+    image: auth_service_spr10
+    container_name: auth_service_spr10
+    restart: always
+    env_file: auth_service/.env
+    expose:
+      - 8000
+    depends_on:
+      - postgres-authdb
+      - redis
+
+  notifications-service:
+    build: notifications_api
+    image: notifications_api_spr10
+    container_name: notifications_api_spr10
+    restart: always
+    env_file: notifications_api/.env
+    expose:
+      - 8000
+    depends_on:
+      - postgres-notifications
+
+  worker_service:
+    build: worker
+    image: worker_service_spr10
+    container_name: worker_service_spr10
+    restart: always
+    env_file: worker/.env
+    depends_on:
+      - postgres-notifications
+      - rabbitmq
+
+  url-shorter:
+    build: url_shorter
+    image: url-shorter_spr10
+    container_name: url-shorter_spr10
+    restart: always
+    env_file: url_shorter/.env
+    expose:
+      - 5000
