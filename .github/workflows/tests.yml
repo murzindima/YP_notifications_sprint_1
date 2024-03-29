@@ -15,7 +15,7 @@ jobs:
 
 
       - name: Run tests
-        run: docker-compose -f docker-compose.tests.yaml up --build --exit-code-from notifications_sprint_1_notifications-service-migrations_1 --abort-on-container-exit
+        run: docker-compose -f docker-compose.tests.yaml up --build --exit-code-from notifications-service-migrations --abort-on-container-exit
 
       - name: "telegram Notification"
         uses: "appleboy/telegram-action@master"
