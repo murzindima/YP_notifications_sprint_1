@@ -81,3 +81,13 @@ services:
       - 8000
     depends_on:
       - postgres-notifications
+  
+  worker_service:
+    build: worker
+    image: worker_service_spr10
+    container_name: worker_service_spr10
+    env_file: worker/.env
+    depends_on:
+      - postgres-notifications
+      - rabbitmq
+
