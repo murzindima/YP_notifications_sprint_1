@@ -72,6 +72,7 @@ To create the tables for the notifications service, you must run the following c
 
 ```bash
 docker exec -it notifications_api_spr10 alembic upgrade head
+```
 
 ## About the authorization and authentication
 
