@@ -19,7 +19,7 @@ jobs:
 
   Notify:
     runs-on: ubuntu-latest
-    needs: Check
+    needs: Tests
     if: ${{ always() }}
     steps:
       - name: Set message
