@@ -6,6 +6,11 @@ services:
     build: nginx
     container_name: nginx_spr10
     restart: always
+    networks:
+      default:
+        aliases:
+          - notifications-api
+          - auth-api
     ports:
       - "8080:80"
 
@@ -48,7 +53,7 @@ services:
 
   postgres-notifications:
     image: postgres:15
-    container_name: postgres_moviesdb_spr10
+    container_name: postgres_notifications_spr10
     restart: always
     env_file: notifications_api/.env
     expose:
@@ -83,6 +88,7 @@ services:
     build: worker
     image: worker_service_spr10
     container_name: worker_service_spr10
+    restart: always
     env_file: worker/.env
     depends_on:
       - postgres-notifications

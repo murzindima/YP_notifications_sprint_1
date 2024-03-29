@@ -9,7 +9,7 @@ class AppSettings(BaseSettings):
     smtp_username: str = 'nickitakosyanov@yandex.ru'
     smtp_password: str = 'eeqpwldczuubcnzu'
     rabbitmq_host: str = 'rabbitmq'
-    queue_name: str = 'welcome23'
+    queue_name: str = 'notifications'
     admin_credentials: dict = {
         'email': 'a@b.com',
         'password': '123qwe'
@@ -20,8 +20,8 @@ class AppSettings(BaseSettings):
     postgres_password: str = "123qwe"
     postgres_host: str = "postgres-notifications"
     postgres_port: int = 5432
-    login_url: str = 'http://auth_service_spr10:8000/api/v1/auth/login'
-    user_url: str = 'http://auth_service_spr10:8000/api/v1/users/'
+    login_url: str = 'http://auth-api/api/v1/auth/login'
+    user_url: str = 'http://auth-api/api/v1/users/'
 
     @property
     def dsn(self) -> PostgresDsn:
