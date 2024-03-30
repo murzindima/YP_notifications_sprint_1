@@ -119,13 +119,9 @@ async def form_and_send_message(
         if notification_type == "email":
             recipient = user["email"]
         elif notification_type == "sms":
-            recipient = user[
-                "phone"
-            ]
+            recipient = user["phone"]
         elif notification_type == "push":
-            recipient = user[
-                "device_id"
-            ]
+            recipient = user["device_id"]
         else:
             logger.error(f"Unsupported notification type: {notification_type}")
             return

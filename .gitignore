@@ -5,6 +5,8 @@ tmp/
 flake-report/
 mypy-report/
 
+node_modules/
+
 
 ### Python template
 .idea/
