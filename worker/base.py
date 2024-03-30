@@ -26,10 +26,10 @@ class PushSender(NotificationSender):
 class EmailSender(NotificationSender):
     async def send(self, recipient: str, subject: str, body: str):
         message = MIMEMultipart()
-        message['From'] = settings.smtp_username
-        message['To'] = recipient
-        message['Subject'] = subject
-        message.attach(MIMEText(body, 'html'))
+        message["From"] = settings.smtp_username
+        message["To"] = recipient
+        message["Subject"] = subject
+        message.attach(MIMEText(body, "html"))
 
         try:
             await aiosmtplib.send(
@@ -38,7 +38,8 @@ class EmailSender(NotificationSender):
                 port=settings.smtp_port,
                 username=settings.smtp_username,
                 password=settings.smtp_password,
-                use_tls=True)
+                use_tls=True,
+            )
             logger.info(f"Email sent successfully to {recipient}")
         except Exception as e:
             logger.error(f"Error sending email to {recipient}: {str(e)}")

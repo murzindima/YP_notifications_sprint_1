@@ -4,8 +4,8 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class NotificationMethod(StrEnum):
-    """Enum for notification methods."""
+class NotificationType(StrEnum):
+    """Enum for notification types."""
 
     EMAIL = "email"
     SMS = "sms"
@@ -18,7 +18,7 @@ class NotificationCreate(BaseModel):
     template_id: UUID | str
     context: dict
     recipients: list[str]
-    method: NotificationMethod
+    notification_type: NotificationType
 
 
 class Notification(BaseModel):
