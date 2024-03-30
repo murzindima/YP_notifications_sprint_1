@@ -4,6 +4,15 @@ from pydantic import PostgresDsn
 
 
 class AppSettings(BaseSettings):
+    sms_provider: str = 'twilio'
+    twilio_account_sid: str = 'ACXXXXXXXX'
+    twilio_auth_token: str = 'your_auth_token'
+    twilio_from: str = '+15017122661'
+
+    push_provider: str = 'onesignal'
+    onesignal_app_id: str = 'your_app_id'
+    onesignal_api_key: str = 'your_api_key'
+
     smtp_server: str = 'smtp.yandex.ru'
     smtp_port: int = 465
     smtp_username: str = 'nickitakosyanov@yandex.ru'
