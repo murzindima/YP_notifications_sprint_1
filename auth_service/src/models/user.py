@@ -7,6 +7,9 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash
 
 from src.db.postgres import Base
+from src.models.login_history import LoginHistory
+from src.models.oauth_provider import OAuthProvider
+from src.models.role import Role
 
 
 class User(Base):

@@ -3,11 +3,11 @@ import { createTemplate } from '../services/TemplateService';
 
 function CreateTemplateForm() {
   const [name, setName] = useState('');
-  const [content, setContent] = useState('');
+  const [template, setContent] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createTemplate({ name, template_content: content });
+    await createTemplate({ name, template: template });
   };
 
   return (
@@ -20,7 +20,7 @@ function CreateTemplateForm() {
       />
       <textarea
         placeholder="Template Content"
-        value={content}
+        value={template}
         onChange={(e) => setContent(e.target.value)}
       />
       <button type="submit">Create Template</button>

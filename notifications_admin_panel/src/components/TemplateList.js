@@ -17,8 +17,10 @@ function TemplateList() {
     <div>
       <h2>Available Templates</h2>
       <ul>
-        {templates.map(template => (
-          <li key={template.id}>{template.name}</li>
+        {templates.map((template) => (
+          <li key={template.id}>
+            <strong>ID:</strong> {template.id} <strong>Name:</strong> {template.name}
+          </li>
         ))}
       </ul>
     </div>

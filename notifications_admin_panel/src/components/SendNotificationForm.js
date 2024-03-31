@@ -5,14 +5,17 @@ function SendNotificationForm() {
   const [templateId, setTemplateId] = useState('');
   const [recipients, setRecipients] = useState('');
   const [context, setContext] = useState('{}');
+  const [notificationType, setNotificationType] = useState('email');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await sendNotification({
+    const dataToSend = {
       template_id: templateId,
-      recipients: recipients.split(','),
-      context: JSON.parse(context)
-    });
+      recipients: recipients.split(',').map(recipient => recipient.trim()),
+      context: JSON.parse(context),
+      notification_type: notificationType
+    };
+    await sendNotification(dataToSend);
   };
 
   return (
@@ -34,6 +37,14 @@ function SendNotificationForm() {
         value={context}
         onChange={(e) => setContext(e.target.value)}
       />
+      <select
+        value={notificationType}
+        onChange={(e) => setNotificationType(e.target.value)}
+      >
+        <option value="email">Email</option>
+        <option value="sms">SMS</option>
+        <option value="sms">Push</option>
+      </select>
       <button type="submit">Send Notification</button>
     </form>
   );
