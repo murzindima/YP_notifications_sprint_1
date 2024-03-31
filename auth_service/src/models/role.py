@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from src.db.postgres import Base
+from src.models.role_permission import RolePermission  # noqa: F401
 
 
 @unique

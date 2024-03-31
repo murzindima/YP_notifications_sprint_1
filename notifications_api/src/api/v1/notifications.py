@@ -31,6 +31,7 @@ async def create_notification(
         "recipients": notification.recipients,
         "template": template.template,
         "context": notification.context,
+        "notification_type": notification.notification_type,
     }
     await rabbitmq_service.publish_message(
         exchange_name="notifications", routing_key="notifications", message=message_body

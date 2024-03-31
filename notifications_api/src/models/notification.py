@@ -18,6 +18,12 @@ class DeliveryStatus(enum.Enum):
     failed = "failed"
 
 
+class NotificationType(enum.Enum):
+    email = "email"
+    sms = "sms"
+    push = "push"
+
+
 class Notification(Base):
     """Model representing an individual notification."""
 
@@ -37,6 +43,9 @@ class Notification(Base):
     sent_at = Column(DateTime(timezone=True))
     status = Column(
         Enum(DeliveryStatus), default=DeliveryStatus.pending, nullable=False
+    )
+    notification_type = Column(
+        Enum(NotificationType), default=NotificationType.email, nullable=False
     )
 
     def __repr__(self) -> str:

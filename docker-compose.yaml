@@ -12,7 +12,7 @@ services:
           - notifications-api
           - auth-api
     ports:
-      - "8080:80"
+      - "80:80"
 
   jaeger:
     image: jaegertracing/all-in-one:1.53
@@ -102,3 +102,11 @@ services:
     env_file: url_shorter/.env
     expose:
       - 5000
+
+  notifications-admin-panel:
+    build: notifications_admin_panel
+    image: notifications_admin_panel_spr10
+    container_name: notifications_admin_panel_spr10
+    restart: always
+    expose:
+      - 3000
